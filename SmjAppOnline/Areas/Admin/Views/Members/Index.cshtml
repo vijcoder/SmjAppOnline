@@ -1,0 +1,179 @@
+﻿@using SmjApp.Utility
+@model PaginatedList<Domains.Models.MembersRegistration>
+
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+@{ ViewData["Title"] = "Index"; }
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+    <form asp-controller="Checkout" asp-action="Index" method="post">
+        <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+        @*<a asp-controller="Checkout" asp-action="index">Pay your contribution.</a>*@
+        <input type="submit" name="btnSubmit" value="Submit" />
+    </form>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                &nbsp;
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MemberCodeSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Member Code</a>
+            </th>
+
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MemberNameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Member Name</a>
+            </th>
+            <th>
+                Mobile No
+            </th>
+            <th>
+                Email ID
+            </th>
+            <th>
+                Village Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" chkMCode="@item.MemberCode" name="chkMemberCode" id=@($"chk{@item.MemberCode}") />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MemberCode)
+                </td>
+                <td>
+                    @{ string MemberName = (String.Format("{0} {1}", item.Initials, item.Fullname)); }
+                    @Html.Label(MemberName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MobileNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmailId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Villagename)
+                </td>
+                <td>
+                    @if (!item.IsExpired)
+                    {
+                        <a asp-controller="Members" asp-action="SetMemebrExpired" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to set expire {@item.MemberCode} member?');">
+                            Set Expire
+                        </a> <text> | </text>
+                    }
+                    @if (!(bool)item.IsApproved)
+                    {
+                        <a asp-controller="Members" asp-action="SetApproval" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to approve {@item.MemberCode} member?');">Set Approval</a> 
+                        <text> | </text>
+                    }
+
+                    @if (item.IsActive && item.IsExpired)
+                    {
+                        <a asp-controller="Members" asp-action="SetDiactivation" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to deactivate {@item.MemberCode} member?');">Set Deactivate</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{ var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : ""; }
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+
+@section Scripts {
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+            var membersSelected = [];
+            $('input[type=checkbox][name=chkMemberCode]').change(function () {
+                if ($(this).prop("checked")) {
+                    membersSelected.push($(this).attr("chkMCode"))
+                }
+                else {
+                    alert(`${this.value} is unchecked`);
+                    membersSelected.pop($(this).attr("chkMCode"))
+                }
+
+                $("#hfMembersSelected").val(membersSelected);
+                alert($("#hfMembersSelected").val());
+            });
+             
+
+
+
+
+        });
+    </script>
+
+    <script type="text/javascript"> 
+        function ConfirmDialog(message) {
+            $('<div></div>').appendTo('body')
+                .html('<div><h6>' + message + '?</h6></div>')
+                .dialog({
+                    modal: true,
+                    title: 'Delete message',
+                    zIndex: 10000,
+                    autoOpen: true,
+                    width: 'auto',
+                    resizable: false,
+                    buttons: {
+                        Yes: function () {
+                            // $(obj).removeAttr('onclick');
+                            // $(obj).parents('.Parent').remove();
+
+                            $('body').append('<h1>Confirm Dialog Result: <i>Yes</i></h1>');
+
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+                            $('body').append('<h1>Confirm Dialog Result: <i>No</i></h1>');
+
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+        };
+    </script>
+
+}

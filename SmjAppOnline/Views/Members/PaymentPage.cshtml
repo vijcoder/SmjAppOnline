@@ -1,0 +1,55 @@
+﻿@*https://www.anycodings.com/1questions/3673786/paytm-payment-integration-in-web-sites-using-aspnet-mvc-5*@
+@*https://stackoverflow.com/questions/56525425/paytm-payment-integration-in-web-sites-using-asp-net-mvc-5*@
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@*@Html.Raw(ViewBag.outputHtml)*@
+@*Response.WriteAsync(@Html.Raw(ViewBag.outputHtml));*@
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0" />
+<script type="application/javascript" src="https://developer.paytm.com/demo//static/js/jquery.min.js"></script>
+<link href="https://developer.paytm.com/demo//static/css/style.css?v=1.9" rel="stylesheet" />
+@*<script type="application/javascript" src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/XXjGJp79519699543840"></script>*@
+
+ 
+<a asp-controller="Members" asp-action="PaymentResponse">Payment</a>
+<button class="button" id="paytmWithPaytm">Pay with Paytm</button>
+
+<script type="application/javascript" crossorigin="anonymous" src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/XXjGJp79519699543840" > </script>
+<script>
+    //here we will pass txn token which you get from initate transaction api, the your orderId and and the amount
+    document.getElementById("paytmWithPaytm").addEventListener("click", function () {
+        onScriptLoad();
+    });
+
+    function onScriptLoad() {
+        
+        var config = {
+            "root": "",
+            "flow": "DEFAULT",
+            "data": {
+                "orderId": "RG-123", /* update order id */
+                "token": "@HttpContextAccessor.HttpContext.Session.GetString("paytmChecksum")", /* update token value */
+                "tokenType": "TXN_TOKEN",
+                "amount": "1.00" /* update amount */
+            },
+            "handler": {
+                "notifyMerchant": function (eventName, data) {
+                    console.log("notifyMerchant handler function called");
+                    console.log("eventName => ", eventName);
+                    console.log("data => ", data);
+                }
+            }
+        };
+        debugger;
+        if (window.Paytm && window.Paytm.CheckoutJS) {
+            window.Paytm.CheckoutJS.onLoad(function excecuteAfterCompleteLoad() {
+                // initialze configuration using init method
+                window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                    // after successfully updating configuration, invoke JS Checkout
+                    window.Paytm.CheckoutJS.invoke();
+                }).catch(function onError(error) {
+                    console.log("error => ", error);
+                });
+            });
+        }
+    }
+</script>

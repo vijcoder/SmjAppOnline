@@ -1,0 +1,168 @@
+﻿
+@model SmjApp.ViewModels.MembersRegistrationModel
+@{
+    string profileImagePath = "/ProfileUploads/" + Model.ProfileImage;
+    string ageProofImagePath = "/AgeProofUploads/" + Model.AgeProofImage;
+    ViewData["Title"] = "Create";
+}
+<style>
+    fieldset {
+        border: solid 1px #eee;
+    }
+
+
+    input {
+        margin: 5px;
+    }
+</style>
+<h4>Members Registration</h4>
+<hr />
+<form asp-controller="Members" asp-action="Edit" enctype="multipart/form-data" method="post">
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CreatedOn" />
+            <input type="hidden" asp-for="CreatedBy" />
+            <input type="hidden" asp-for="ModifiedOn" />
+            <input type="hidden" asp-for="ModifiedBy" />
+            <input type="hidden" asp-for="MemberCode" />
+            <input type="hidden" asp-for="CreatedBy" />
+            <input type="hidden" asp-for="Amount" />
+            @*<input type="hidden" asp-for="IsPaid" />
+                <input type="hidden" asp-for="IsExpired" />
+                    <input type="hidden" asp-for="IsActive" />
+                    <input type="hidden" asp-for="IsApproved" />*@
+            <input type="hidden" asp-for="ApprovedBy" />
+            <input type="hidden" asp-for="ApprovedDate" />
+            <div class="form-group">
+                <select asp-for="Initials" class="form-control" asp-items="ViewBag.Initials">
+                    <option value="">-- Select Initials --</option>
+                    <option value="Mr">Mr</option>
+                    <option value="Mrs">Mrs</option>
+                    <option value="Widow">Widow</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input asp-for="Fullname" class="form-control" placeholder="Full name" required />
+                <span asp-validation-for="Fullname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="MobileNo" class="form-control" placeholder="Mobile number" maxlength="12" type="number" />
+                <span asp-validation-for="MobileNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="EmailId" class="form-control" placeholder="EmailId" type="email"  />
+                <span asp-validation-for="EmailId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Villagename" class="form-control" placeholder="Village name" required />
+                <span asp-validation-for="Villagename" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Address" class="form-control" placeholder="Address" required />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="DOB" class="form-control" placeholder="Date of birth" required />
+                <span asp-validation-for="DOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" style="margin-right:10px;">IsExpired</label>
+                @*-----tag helpers link
+                    https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0*@
+                <input asp-for="IsExpired" />
+            </div>
+            <div class="form-group">
+                <div style="display:flex;">
+                    <label class="control-label" asp-for="IsPaid" style="margin-right:10px;"></label>
+                    <input asp-for="IsPaid" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" asp-for="IsApproved" style="margin-right:10px;"></label>
+                <input asp-for="IsApproved" /> <br />
+                <label class="control-label" asp-for="ApprovedBy"> <b> ApprovedBy: </b> @Model.ApprovedBy</label> <br />
+                <label class="control-label" asp-for="ApprovedDate"><b>ApprovedDate:</b> @Model.ApprovedDate</label>
+
+            </div>
+            <div class="form-group">
+                <div style="display:flex;">
+                    <label class="control-label" asp-for="IsActive" style="margin-right:10px;"></label>
+                    <input asp-for="IsActive" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="ProfilePicture" class="control-label"></label>
+                <div class="custom-file">
+                    <input asp-for="ProfilePicture" class="custom-file-input" onchange="readProfileURL(this)" />
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+                <img src="~/images/default-profile.PNG" alt="No Image" id="imgProfileURL" style='height:150px;'>
+                <input type="hidden" id="hfProfileImage" asp-for="ProfileImage" />
+
+                <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AgeProofPicture" class="control-label"></label>
+                <div class="custom-file">
+                    <input asp-for="AgeProofPicture" class="custom-file-input" onchange="readAgeProofURL(this)" />
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+                <img src="~/images/default-profile.PNG" alt="No Image" id="imgAgeProofURL" style='height:150px;'>
+                <input type="hidden" id="hfProfileImage" asp-for="AgeProofImage" />
+                <span asp-validation-for="AgeProofPicture" class="text-danger"></span>
+            </div>
+
+        </div>
+    </div>
+    <div>
+        <div class="form-group">
+            <input type="submit" value="Submit" class="btn btn-primary" />
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+        function readProfileURL(input) {
+            if (input.files && input.files[0]) {
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.querySelector("#imgProfileURL").setAttribute("src", e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function readAgeProofURL(input) {
+            if (input.files && input.files[0]) {
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.querySelector("#imgAgeProofURL").setAttribute("src", e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+    </script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#imgProfileURL").attr("src", '@profileImagePath');
+        $("#imgAgeProofURL").attr("src", '@ageProofImagePath');
+    });
+    </script>
+
+}

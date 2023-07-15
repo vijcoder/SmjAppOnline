@@ -1,0 +1,146 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+@*<button id="button" class="btn-success">Row count</button>*@
+@*<form asp-controller="Checkout" asp-action="Index" method="post">
+    <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+    <input type="submit" name="btnSubmit" class="btn btn-primary" id="button" value="Pay Contribution" />
+</form>*@
+<br />
+<div class="table-responsive">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Fullname</th>
+                <th>MobileNo</th>
+                <th>EmailId</th>
+                <th>Villagename</th>
+                <th>IsActive</th>
+                @*<th>SetExpiry</th>*@
+                @*<th>Action</th>
+                    <th>Action</th>
+                    <th>Action</th>*@
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<br />
+<br />
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var membersSelected = [];
+        var table = $("#example").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            scrollY: "100%",
+            scrollX: true,
+            scrollCollapse: true,
+            select: { style: 'multi' },
+            fixedColumns: {
+                left: 1
+            },
+            //scroller: {
+            //    loadingIndicator: true
+            //},
+            //scrollCollapse: true,
+            "ajax": {
+                "url": "/Admin/Members/ExMemebrsList",
+                "type": "POST",
+                "datatype": "json"
+            },
+            //"columnDefs": [{
+            //    "defaultContent": "-",
+            //    "targets": "_all",
+            //}],
+            "columnDefs": [{
+                "defaultContent": "-",
+                "targets": [0],
+                "visible": false,
+                "searchable": false
+            }],
+            "columns": [
+                { "data": "id", "name": "Id", "autoWidth": true },
+                { "data": "memberCode", "name": "MemberCode", "sWidth": "20px" },
+                { "data": "fullname", "name": "Fullname", "autoWidth": true },
+                { "data": "villagename", "name": "Villagename", "autoWidth": true },
+                { "data": "mobileNo", "name": "MobileNo", "autoWidth": true },
+                { "data": "emailId", "name": "EmailId", "autoWidth": true },
+                { "data": "isActive", "name": "IsActive", "autoWidth": true },
+                //{
+                //    "render": function (data, type, full, meta) {
+                //        return '<a href="/Admin/Members/Edit/' + full.Id + '"  class="text-warning">Edit</a> | <a href="/Admin/Members/SetMemebrExpired/' + full.Id + '"  class="text-warning">SetMemebrExpired</a> | <a href="/Admin/Members/SetApproval/' + full.Id + '"  class="text-warning">SetApproval</a> | <a href="/Admin/Members/SetDiactivation/' + full.Id + '"  class="text-warning">SetDiactivation</a> ';
+                //    },
+                //    /*"render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Admin/Members/SetMemebrExpired/' + full.Id + '">Edit</a>'; }*/
+                //},
+                //{
+                //    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Admin/Members/SetMemebrExpired/' + full.Id + '">Edit</a>'; }
+                //},
+                //{
+                //    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Admin/Members/SetApproval/' + full.Id + '">Edit</a>'; }
+                //}, {
+                //    "render": function (data, type, full, meta) { return '<a class="btn btn-info" onclick="return confirm("Are you sure you want to deactivate {'+ full.memberCode+ '} member ? ");" href="/Admin/Members/SetDiactivation/' + full.Id + '">Edit</a>'; }
+                //},
+                //{
+                //    data: null,
+                //    render: function(data, type, row) {
+                //        return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.Id + "'); >Delete</a>";
+                //    }
+                //},
+            ]
+
+        });
+
+        $('#example tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+
+            $('#button').click(function () {
+                for (var i = 0; i < table.rows('.selected').data().length; i++){
+                    membersSelected.push(table.rows('.selected').data()[i]["memberCode"]);
+                }
+                debugger;
+                $("#hfMembersSelected").val(membersSelected);
+                if (membersSelected.length <= 0) {
+                    alert("Please select members from the list to proceed to pay.");
+                    return false;
+                }
+            });
+
+    });
+function DeleteData(CustomerID) {
+    if (confirm("Are you sure you want to delete ...?")) {
+        Delete(CustomerID);
+    } else {
+        return false;
+    }
+}
+
+
+function Delete(CustomerID) {
+    var url = '@Url.Content("~/")' + "DemoGrid/Delete";
+
+    $.post(url, { ID: CustomerID }, function(data) {
+        if (data) {
+            oTable = $('#example').DataTable();
+            oTable.draw();
+        } else {
+            alert("Something Went Wrong!");
+        }
+    });
+}
+
+    </script>
+
+
+}
+

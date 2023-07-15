@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Members List";
+}
+@using SmjApp.ViewModels
+@model MultiSelectMembersList
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+@*<link href="~/css/auto-complete-style.css" rel="stylesheet" />*@
+
+<style type="text/css">
+    .ui-helper-hidden-accessible {
+        display: none;
+    }
+</style>
+
+
+<div>
+    <form enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div>
+            <br />
+
+            <h3>Link members to your account.</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="ui-widget">
+
+                            <input id="myAutocompleteMultiple" type="text" class="form-control" placeholder="Please enter member code or name" style="width:100%;" />
+                            <input type="hidden" id="hfMemberCode" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <input type="button" class="btn btn-danger" id="btnInsertUserMemberMapping" value="Submit" />
+                </div>
+                @*<div class="col-md-6">
+                        <div id="tagsname"></div>
+                    </div>*@
+            </div>
+        </div>
+    </form>
+</div>
+
+<br />
+<div class="table-responsive">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Fullname</th>
+                <th>MobileNo</th>
+                <th>EmailId</th>
+                <th>Villagename</th>
+            </tr>
+        </thead>
+    </table>
+    <hr />
+    <form asp-controller="Checkout" asp-action="Index" method="post">
+        <div style="text-align:center;">
+            <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+            <input type="submit" name="btnSubmit" class="btn btn-primary" id="button" value="Pay Contribution" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+    <script>
+       // $(document).ready(function () {
+            var membersSelected = [];
+            var table = $("#example").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                order: [[1, 'desc']],
+                scrollY: "100%",
+                scrollX: true,
+                scrollCollapse: true,
+                select: { style: 'multi' },
+                fixedColumns: {
+                    left: 1
+                },
+                //scroller: {
+                //    loadingIndicator: true
+                //},
+                //scrollCollapse: true,
+                "ajax": {
+                    "url": "/Members/LoadData",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                //"columnDefs": [{
+                //    "defaultContent": "-",
+                //    "targets": "_all",
+                //}],
+                "columnDefs": [{
+                    "defaultContent": "-",
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "memberCode", "name": "MemberCode", "sWidth": "20px" },
+                    { "data": "fullname", "name": "Fullname", "autoWidth": true },
+                    { "data": "villagename", "name": "Villagename", "autoWidth": true },
+                    { "data": "mobileNo", "name": "MobileNo", "autoWidth": true },
+                    { "data": "emailId", "name": "EmailId", "autoWidth": true },
+                    
+                ]
+
+            });
+
+            $('#example tbody').on('click', 'tr', function () {
+                $(this).toggleClass('selected');
+            });
+
+            $('#button').click(function () {
+                for (var i = 0; i < table.rows('.selected').data().length; i++) {
+                    membersSelected.push(table.rows('.selected').data()[i]["memberCode"]);
+                }
+                $("#hfMembersSelected").val(membersSelected);
+                if (membersSelected.length <= 0) {
+                    alert("Please select members from the list to proceed to pay.");
+                    return false;
+                }
+            });
+
+       // });
+
+    @*</script>
+    <script type="text/javascript">*@
+        var memberSelectedFromAutocomplete = 0;
+            $(function () {
+                var availableTags = JSON.parse('@Html.Raw(Json.Serialize(ViewBag.MembersSelectList))');
+                $('#myAutocompleteMultiple').autocomplete({
+                    source: availableTags,
+                });
+            });
+
+
+        $(document).ready(function () {
+            $('#myAutocompleteMultiple').on('autocompleteselect', function (e, ui) {
+                if (this.value == "") {
+                    $("#hfMemberCode").val("");
+                }
+                var selItems = ui.item.value.split('-');
+                $("#hfMemberCode").val(selItems[0]);
+                //$("#btnInsertUserMemberMapping").css("margin-top", "20px");
+                //$('#tagsname').html('You selected: ' + selItems[0]);
+            });
+
+            //$('#myAutocompleteMultiple').on('change', function () {
+            //    if (this.length === 0)
+            //        $("#hfMemberCode").val("");
+            //});
+            $("#myAutocompleteMultiple").change(function () {
+                if (this.value == "") {
+                    $("#hfMemberCode").val("");
+                }
+            });
+        });
+
+        $("#btnInsertUserMemberMapping").click(function () {
+            //debugger;
+            if ($("#hfMemberCode").val() == "") {
+                alert("Please select Member from the auto complete box.");
+                return false;
+            }
+
+            var formData = {
+                //'memberId': memberSelectedFromAutocomplete //for get email
+                'memberId': $("#hfMemberCode").val()
+            };
+            $.ajax({
+                "url": "/Members/UserMemberMapping",
+                "type": "POST",
+                "datatype": "json",
+                "data": formData,
+                success: function (resultData) {
+                    $("#myAutocompleteMultiple").val('');
+                    //debugger;
+                    if (resultData.item2) {
+                        alert("Member " + $("#hfMemberCode").val()+" already linked to account.");
+                    } else {
+                        alert("Member successfully linked to your account. Once it's approved by Admin you are abe to see it in your list.");
+                        //location.reload();
+                        table.draw();
+                    }
+                }
+            })
+        });
+
+    </script>
+}
+

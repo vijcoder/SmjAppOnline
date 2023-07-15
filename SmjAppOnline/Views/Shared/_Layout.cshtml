@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @*<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">*@
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0" />
+    <title>@ViewData["Title"] - Shradhanjali App</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/fixedcolumns/4.1.0/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="~/css/tour-default.css" rel="stylesheet" />
+
+    <style type="text/css">
+        body {
+            top: 0 !important;
+        }
+
+
+        .goog-te-banner-frame {
+            display: none;
+            height: 0 !important;
+            visibility: hidden
+        }
+
+        #google_translate_element select {
+            background-color: #f6edfd;
+            color: #383ffa;
+            border: none;
+            border-radius: 3px;
+            padding: 6px 8px
+        }
+
+        .text-dark {
+            color: #0094ff !important
+        }
+    </style>
+
+    @RenderSection("HeadScripts", required: false)
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo.png" width="100" />
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <div id="google_translate_element" style="margin-left:20px;"></div>
+                    @Html.Partial("_LoginPartial")
+                    @*<ul class="navbar-nav">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item" style="margin-right:10px;">
+                                    <a asp-area="Admin" asp-controller="Home" asp-action="Index">  Admin </a>
+                                </li>
+                            }
+                        </ul>*@
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="PaymentHistory">Payment History</a>
+                        </li>
+                        @*<li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>*@
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Create">Members Registration</a>
+                        </li>
+                        @*@if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Create">Members Registration</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">Members List</a>
+                                </li>
+                            }*@
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @*<footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2022 - Shadhanjali App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <a asp-area="" asp-controller="Home" asp-action="TermsAndConditions">Terms and Conditions</a>
+                <a asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                <a asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+            </div>
+        </footer>*@
+    <!-- Remove the container if you want to extend the Footer to full width. -->
+    <div class="container my-2">
+        <!-- Footer -->
+        <footer class="text-center text-white" style="color: #3f51b5">
+            <!-- Grid container -->
+            <div class="container">
+                <!-- Section: Links -->
+                <section class="mt-5">
+                    <!-- Grid row-->
+                    <div class="row text-center d-flex justify-content-center pt-2">
+                        <div class="col-md-2">
+                            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="margin-top:-15px;">
+                                <img src="~/images/logo.png" width="100" />
+                            </a>
+                        </div>
+                        <!-- Grid column -->
+                        <div class="col-md-2">
+                            <h6 class="text-uppercase font-weight-bold">
+                                <a asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                            </h6>
+                        </div>
+                        <!-- Grid column -->
+                        <!-- Grid column -->
+                        <div class="col-md-2">
+                            <h6 class="text-uppercase font-weight-bold">
+                                <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </h6>
+                        </div>
+                        <!-- Grid column -->
+                        <!-- Grid column -->
+                        <div class="col-md-2">
+                            <h6 class="text-uppercase font-weight-bold">
+                                <a asp-area="" asp-controller="Home" asp-action="TermsAndConditions">Terms and Conditions</a>
+                            </h6>
+                        </div>
+                        <!-- Grid column -->
+                        <!-- Grid column -->
+                        <div class="col-md-2">
+                            <h6 class="text-uppercase font-weight-bold">
+                                <a asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+                            </h6>
+                        </div>
+                        <!-- Grid column -->
+                        <!-- Grid column -->
+                        <div class="col-md-2">
+                            <h6 class="text-uppercase font-weight-bold">
+                                <a href="#!">Help</a>
+                            </h6>
+                        </div>
+                        <!-- Grid column -->
+                    </div>
+                    <!-- Grid row-->
+                </section>
+                <!-- Section: Links -->
+                <!-- Section: Text -->
+                @*<section class="mb-5">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-lg-8">
+                                <p>
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
+                                    distinctio earum repellat quaerat voluptatibus placeat nam,
+                                    commodi optio pariatur est quia magnam eum harum corrupti
+                                    dicta, aliquam sequi voluptate quas.
+                                </p>
+                            </div>
+                        </div>
+                    </section>*@
+                <!-- Section: Text -->
+                <!-- Section: Social -->
+                <section class="text-center mb-5">
+                    <a href="" class="me-4">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="" class="me-4">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="" class="me-4">
+                        <i class="fab fa-google"></i>
+                    </a>
+                    <a href="" class="me-4">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="" class="me-4">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="" class="me-4">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </section>
+                <!-- Section: Social -->
+            </div>
+            <!-- Grid container -->
+            <!-- Copyright -->
+            @*<div class="text-center p-3"
+                     style="background-color: rgba(0, 0, 0, 0.2)">
+                    © 2020 Copyright:
+                    <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+                </div>*@
+            <!-- Copyright -->
+        </footer>
+        <!-- Footer -->
+    </div>
+    <!-- End of .container -->
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="~/js/autocomplete.multiselect.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/js/tour.js"></script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ includedLanguages: 'en,gu,hi', pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
+        }
+    </script>
+
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+    @RenderSection("Scripts", required: false)
+
+    @*<script>
+            const tour = new Tour("demo");
+            tour.addStep('step1', {
+                title: "Step 1",
+                text: "Step 1",
+                hook: "#example",
+                timer: 5000,
+                onShow: function () {
+                    // Custom Function
+                },
+                onHide: function () {
+                    // Custom Function
+                },
+                buttons: [
+                    {
+                        text: "Previous",
+                        action: "tour.previous()"
+                    },
+                    {
+                        text: "Next",
+                        action: "tour.next()"
+                    }
+                ],
+                links: [
+                    {
+                        text: "More info?",
+                        href: "#"
+                    }
+                ]
+            });
+            tour.addStep('step2', {
+                title: "Step 2",
+                text: "Step 2",
+                hook: ".step2",
+                timer: 5000,
+                onShow: function () {
+                    // Custom Function
+                },
+                onHide: function () {
+                    // Custom Function
+                },
+                buttons: [
+                    {
+                        text: "Previous",
+                        action: "tour.previous()"
+                    },
+                    {
+                        text: "Next",
+                        action: "tour.next()"
+                    }
+                ],
+                links: [
+                    {
+                        text: "More info?",
+                        href: "#"
+                    }
+                ]
+            });
+            tour.addStep('step3', {
+                title: "Step 3",
+                text: "Step 3",
+                hook: ".step3",
+                timer: 5000,
+                onHide: function () {
+                    // Custom Function
+                },
+                buttons: [
+                    {
+                        text: "Previous",
+                        action: "tour.previous()"
+                    },
+                    {
+                        text: "Finish",
+                        action: "tour.stop()"
+                    }
+                ],
+                links: [
+                    {
+                        text: "More info?",
+                        href: "#"
+                    }
+                ]
+            });
+            tour.start();
+        </script>*@
+
+</body>
+</html>

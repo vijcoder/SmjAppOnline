@@ -1,0 +1,91 @@
+﻿@{
+    Layout = "~/Views/Shared/_ProfileLayout.cshtml";
+    ViewData["Title"] = "Members List";
+}
+
+@*<button id="button" class="btn-success">Row count</button>*@
+@*<form asp-controller="Checkout" asp-action="Index" method="post">
+        <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+        <input type="submit" name="btnSubmit" class="btn btn-primary" id="button" value="Pay Contribution" />
+    </form>
+    <br />*@
+
+<div class="table-responsive">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>UserId</th>
+                <th>UserName</th>
+                <th>UserMobileNo</th>
+                <th>MemberCode</th>
+                <th>MemberName</th>
+                <th>MemberMobieNo</th>
+                <th>IsApproved</th>
+                <th>ApprovedOn</th>
+                <th>ApprovedBy</th>
+                <th>CreatedOn</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var membersSelected = [];
+            var table = $("#example").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                scrollY: "100%",
+                scrollX: true,
+                scrollCollapse: true,
+                //select: { style: 'multi' },
+                fixedColumns: {
+                    left: 1
+                },
+                "ajax": {
+                    "url": "/Profile/LoadUserMembersMappingList",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs": [{
+                    "defaultContent": "-",
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "userId", "name": "UserId" },
+                    { "data": "username", "name": "Username" },
+                    { "data": "userMobileNo", "name": "UserMobileNo", "autoWidth": true },
+                    // { "data": "userEmailId", "name": "UserEmailId", "autoWidth": true },
+                    { "data": "memberCode", "name": "MemberCode", "autoWidth": true },
+                    { "data": "membername", "name": "MemberName", "autoWidth": true },
+                    { "data": "memberMobileNo", "name": "MemberMobileNo", "autoWidth": true },
+                    { "data": "isApproved", "name": "IsApproved", "autoWidth": true },
+                    { "data": "approvedOn", "name": "ApprovedOn", "autoWidth": true },
+                    { "data": "approvedBy", "name": "ApprovedBy", "autoWidth": true },
+                    { "data": "createdOn", "name": "CreatedOn", "autoWidth": true },
+                    {
+                        data: null,
+                        "render": function (data, type, full, meta) {
+                            //return '<a href="/Profie/ApproveUserMemberMapping/' + full.Id + '"  class="text-warning">Approve</a>';
+                            return '<a href="/Profile/ApproveUserMemberMapping/' + full.id + '"  class="text-warning">Set Approved</a>';
+                        }
+                    },
+                ]
+            });
+        });
+    </script>
+
+}
+

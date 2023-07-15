@@ -1,0 +1,185 @@
+﻿
+@using SmjApp.Utility
+@model PaginatedList<Domains.Models.RegistrationTransactions>
+
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+@{ ViewData["Title"] = "Index"; }
+
+<h2>Index</h2>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MemberCodeSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Member Code</a>
+            </th> 
+            <th>
+                ORDERID
+            </th>
+            <th>
+                TXNAMOUNT
+            </th>
+            <th>
+                STATUS
+            </th>
+            <td>
+                IsPaid
+            </td>
+            <th>
+                RESPMSG
+            </th>
+            @*<th>
+                TXNID
+            </th>*@
+            <th>
+                TXNDATE
+            </th>
+            <th>
+                BANKNAME
+            </th>
+            <td>
+                PAYMENTMODE
+            </td>
+            <td>
+                PaymentBy
+            </td>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MemberCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TxnAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.STATUS)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPaid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RESPMSG)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.TXNID)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.TXNDATE)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BANKNAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PAYMENTMODE)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentBy)
+            </td>
+
+        </tr>
+        }
+    </tbody>
+</table>
+
+@{ var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : ""; }
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+
+@section Scripts {
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+            var membersSelected = [];
+            $('input[type=checkbox][name=chkMemberCode]').change(function () {
+                if ($(this).prop("checked")) {
+                    membersSelected.push($(this).attr("chkMCode"))
+                }
+                else {
+                    alert(`${this.value} is unchecked`);
+                    membersSelected.pop($(this).attr("chkMCode"))
+                }
+
+                $("#hfMembersSelected").val(membersSelected);
+                alert($("#hfMembersSelected").val());
+            });
+
+
+
+
+
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        function ConfirmDialog(message) {
+            $('<div></div>').appendTo('body')
+                .html('<div><h6>' + message + '?</h6></div>')
+                .dialog({
+                    modal: true,
+                    title: 'Delete message',
+                    zIndex: 10000,
+                    autoOpen: true,
+                    width: 'auto',
+                    resizable: false,
+                    buttons: {
+                        Yes: function () {
+                            // $(obj).removeAttr('onclick');
+                            // $(obj).parents('.Parent').remove();
+
+                            $('body').append('<h1>Confirm Dialog Result: <i>Yes</i></h1>');
+
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+                            $('body').append('<h1>Confirm Dialog Result: <i>No</i></h1>');
+
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+        };
+    </script>
+
+}
+
+

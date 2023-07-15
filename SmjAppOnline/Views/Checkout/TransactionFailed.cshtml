@@ -1,0 +1,108 @@
+﻿
+@model Domains.Models.ContributionTransactions
+
+<style type="text/css">
+    .table-responsive-stack tr {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+
+.table-responsive-stack td,
+.table-responsive-stack th {
+   display:block;
+/*
+   flex-grow | flex-shrink | flex-basis   */
+   -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+.table-responsive-stack .table-responsive-stack-thead {
+   font-weight: bold;
+}
+
+@@media screen and (max-width: 768px) {
+   .table-responsive-stack tr {
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+              flex-direction: column;
+      border-bottom: 3px solid #ccc;
+      display:block;
+
+   }
+   /*  IE9 FIX   */
+   .table-responsive-stack td {
+      float: left\9;
+      width:100%;
+   }
+}
+    .display-3 {
+        font-size: 3.5rem;
+        font-weight: 300;
+        line-height: 1.2;
+    }
+
+</style>
+
+<div class="jumbotron text-center">
+    <h1 class="display-3">Transaction failed!</h1>
+    <p class="lead"><strong>Please check </strong> below possible reason for failed this transaction.</p>
+    <hr>
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table" style="text-align:left;">
+                <tbody>
+                    <tr>
+                        <td>Transaction Id</td>
+                        <td>@Model.TXNID</td>
+                    </tr>
+                    <tr>
+                        <td>Amount</td>
+                        <td>@Model.TXNAMOUNT</td>
+                    </tr>
+                    <tr>
+                        <td>Message</td>
+                        <td>@Model.RESPMSG</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Mode</td>
+                        <td>@Model.PAYMENTMODE</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        @*<div>
+            <table class="table table-bordered table-striped table-responsive-stack" id="tableOne">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="flex-basis: 33.3333%;">Transaction Id</th>
+                        <th style="flex-basis: 33.3333%;">Amount</th>
+                        <th style="flex-basis: 33.3333%;">Message</th>
+                        <th style="flex-basis: 33.3333%;">Payment Mode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="flex-basis: 33.3333%;"><span class="table-responsive-stack-thead" style="display: none;">Name:</span> @Model.TXNID</td>
+                        <td style="flex-basis: 33.3333%;"><span class="table-responsive-stack-thead" style="display: none;">Amount:</span>  @Model.TXNAMOUNT</td>
+                        <td style="flex-basis: 33.3333%;"><span class="table-responsive-stack-thead" style="display: none;">Message:</span>  @Model.RESPMSG</td>
+                        <td style="flex-basis: 33.3333%;"><span class="table-responsive-stack-thead" style="display: none;">Payment Mode:</span> @Model.PAYMENTMODE</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>*@
+    </div>
+    <p>
+        Having trouble? <a href="">Contact us</a>
+    </p>
+    <p class="lead">
+        <a class="btn btn-primary btn-sm" asp-controller="Home" asp-action="Index" role="button">Continue to homepage</a>
+    </p>
+</div>

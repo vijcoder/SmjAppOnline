@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Registration Transactions";
+}
+
+@*<button id="button" class="btn-success">Row count</button>*@
+@*<form asp-controller="Checkout" asp-action="Index" method="post">
+        <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+        <input type="submit" name="btnSubmit" class="btn btn-primary" id="button" value="Pay Contribution" />
+    </form>*@
+<br />
+<div class="table-responsive">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Order Id</th>
+                <th>Amount Paid</th>
+                <th>IsPaid</th>
+                <th>PaymentBy</th>
+                <th>Is Verified</th>
+                <th>Approved By</th>
+                <th>Approved Date</th>
+                <th>Payment Date</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<br />
+<br />
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var membersSelected = [];
+            var table = $("#example").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                //"orderMulti": false, // for disable multiple column at once
+                scrollY: "100%",
+                scrollX: true,
+                scrollCollapse: true,
+                //select: { style: 'multi' },
+                fixedColumns: {
+                    left: 1
+                },
+                "ajax": {
+                    "url": "GetRegistrationTransactions",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs": [{
+                    "defaultContent": "-",
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "memberCode", "name": "MemberCode" },
+                    { "data": "orderId", "name": "OrderId" },
+                    { "data": "amount", "name": "Amount" },
+                    { "data": "isPaid", "name": "IsPaid", "autoWidth": true },
+                    { "data": "paymentBy", "name": "PaymentBy", "autoWidth": true },
+                    { "data": "isPaymentApproved", "name": "IsPaymentApproved", "autoWidth": true },
+                    { "data": "paymentApprovedBy", "name": "PaymentApprovedBy", "autoWidth": true },
+                    { "data": "paymentApprovedDate", "name": "PaymentApprovedDate", "autoWidth": true },
+                    { "data": "createdOn", "name": "CreatedOn", "autoWidth": true },
+                ]
+
+            });
+
+        });
+
+
+    </script>
+
+
+}
+
+

@@ -1,0 +1,83 @@
+﻿@using Domains.Models
+@model MembersRegistration
+@*@model SmjApp.Models.MembersRegistrationModel*@
+
+@{ ViewData["Title"] = "Create"; }
+
+<h4>Members Registration</h4>
+<hr />
+<form asp-action="Create">
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Initials" class="control-label"></label>
+                <select asp-for="Initials" class="form-control" asp-items="ViewBag.Initials">
+                    <option value="">-- Select Initials --</option>
+                    <option value="Mr">Mr</option>
+                    <option value="Mrs">Mrs</option>
+                    <option value="Widow">Widow</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fullname" class="control-label"></label>
+                <input asp-for="Fullname" class="form-control" required />
+                <span asp-validation-for="Fullname" class="text-danger"></span>
+            </div>            
+            <div class="form-group">
+                <label asp-for="MobileNo" class="control-label"></label>
+                <input asp-for="MobileNo" class="form-control" maxlength="12" type="number" required />
+                <span asp-validation-for="MobileNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailId" class="control-label"></label>
+                <input asp-for="EmailId" class="form-control" type="email" required />
+                <span asp-validation-for="EmailId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Villagename" class="control-label"></label>
+                <input asp-for="Villagename" class="form-control" required />
+                <span asp-validation-for="Villagename" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" required />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DOB" class="control-label"></label>
+                <input asp-for="DOB" class="form-control" required />
+                <span asp-validation-for="DOB" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="ProfileImage" class="control-label"></label>
+                <input type="image" id="imgProfileImage" style="height:50px; width:50px; border:solid 1px #eee" />
+                <input asp-for="ProfileImage" type="file" required/>
+                <span asp-validation-for="ProfileImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AgeProofImage" class="control-label"></label>
+                <input type="image" id="imgAgeProofImage" style="height:50px; width:50px; border:solid 1px #eee" />
+                <input asp-for="AgeProofImage"  type="file" required />
+                <span asp-validation-for="AgeProofImage" class="text-danger"></span>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,78 @@
+﻿@{
+Layout = "~/Views/Shared/_ProfileLayout.cshtml";
+    ViewData["Title"] = "Members List";
+}
+
+@*<button id="button" class="btn-success">Row count</button>*@
+@*<form asp-controller="Checkout" asp-action="Index" method="post">
+        <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+        <input type="submit" name="btnSubmit" class="btn btn-primary" id="button" value="Pay Contribution" />
+    </form>
+    <br />*@
+
+<div class="table-responsive">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>MobileNo</th>
+                <th>EmailId</th>
+                <th>Role</th>
+                <th>IsActive</th>
+                <th>CreatedOn</th>
+                <th>ModifiedOn</th>
+                <th>ModifiedBy</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var membersSelected = [];
+            var table = $("#example").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                scrollY: "100%",
+                scrollX: true,
+                scrollCollapse: true,
+                //select: { style: 'multi' },
+                fixedColumns: {
+                    left: 1
+                },
+                "ajax": {
+                    "url": "/Profile/LoadUsersList",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs": [{
+                    "defaultContent": "-",
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "name", "name": "Name" },
+                    { "data": "mobileNo", "name": "MobileNo", "autoWidth": true },
+                    { "data": "emailId", "name": "EmailId", "autoWidth": true },
+                    { "data": "role", "name": "Role", "autoWidth": true },
+                    { "data": "isActive", "name": "IsActive", "autoWidth": true },
+                    { "data": "createdOn", "name": "CreatedOn", "autoWidth": true },
+                    { "data": "modifiedOn", "name": "ModifiedOn", "autoWidth": true },
+                    { "data": "modifiedBy", "name": "ModifiedBy", "autoWidth": true },
+                ]
+            });
+        });
+    </script>
+
+}
+

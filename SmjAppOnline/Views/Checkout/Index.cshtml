@@ -1,0 +1,262 @@
+﻿@*@model IList<Domains.Models.MembersRegistration>*@
+@{
+    ViewData["Title"] = "Checkout page";
+}
+@using SmjApp.Utility
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@inject IConfiguration configuration
+
+@model dynamic
+
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0" />
+
+<style type="text/css">
+    :root {
+        --gradient: linear-gradient(to left top, #DD2476 10%, #FF512F 90%) !important;
+    }
+
+    .card {
+        margin-bottom: 2rem;
+    }
+    /*
+    .btn {
+        border: 5px solid;
+        border-image-slice: 1;
+        background: var(--gradient) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        border-image-source: var(--gradient) !important;
+        text-decoration: none;
+        transition: all .4s ease;
+    }
+
+        .btn:hover, .btn:focus {
+            background: var(--gradient) !important;
+            -webkit-background-clip: none !important;
+            -webkit-text-fill-color: #fff !important;
+            border: 5px solid #fff !important;
+            box-shadow: #222 1px 0 10px;
+            text-decoration: underline;
+        }*/
+</style>
+
+@{
+    //int TotalContributionAmount = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Cookies["TotalContribution"]);
+    //string txtToken = HttpContextAccessor.HttpContext.Request.Cookies["txtToken"];
+    //string OrderId = HttpContextAccessor.HttpContext.Request.Cookies["OrderId"];
+    int TotalContributionAmount = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("TotalContribution"));
+    string txtToken = HttpContextAccessor.HttpContext.Session.GetString("txtToken");
+    string OrderId = HttpContextAccessor.HttpContext.Session.GetString("OrderId");
+    string membExpired = HttpContextAccessor.HttpContext.Session.GetString("MembersExpired");
+}
+
+
+<div class="container">
+    <div class="jumbotron jumbotron-fluid" style="margin: 5px 0 5px 0; padding: 5px 0 5px 0; ">
+        <div class="container">
+            <h2 style="font-size:18px;">List of Demised members.</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model.MembersRegistration)
+        {
+
+            <div class="col-md-3">
+                <div class="card">
+                    @if (item.ProfileImage == null || item.ProfileImage == "")
+                    {
+                        <img src="~/images/default-profile.png" class="card-img-top" alt="...">
+                    }
+                    else
+                    {
+                        <img src="@FilesLocation.RetriveProfileImageFromFolder@item.ProfileImage" class="card-img-top" alt="...">
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Initials @item.Fullname</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Member Code: @item.MemberCode</h6>
+                        <p class="card-text">Villagename: @item.Villagename</p>
+                        @*<a href="#" class="btn mr-2"><i class="fas fa-link"></i> Email: @item.EmailId</a>
+                            <a href="#" class="btn "><i class="fab fa-github"></i>Call: @item.MobileNo</a>*@
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!--<div class="col-xl-6 col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="@FilesLocation.RetriveProfileImageFromFolder@item.ProfileImage"
+                                     alt=""
+                                     style="width: 45px; height: 45px; margin-right:20px;"
+                                     class="rounded-circle" />
+                                <div class="ms-3">
+                                    <p class="fw-bold mb-1">Member Code: @item.MemberCode</p>-->
+            @*<p class="text-muted mb-0">michael.bale@gmail.com</p>*@
+            <!--<p class="fw-bold mb-1">@item.Initials @item.Fullname</p>
+                                    <p class="fw-bold mb-1">@item.Villagename</p>
+                                </div>
+                            </div>
+                            <span class="badge rounded-pill badge-success">Demised</span>
+                        </div>
+                    </div>
+                    <div class="card-footer border-0 bg-light p-2 d-flex justify-content-around">
+                        <a class="btn btn-link m-0 text-reset"
+                           role="button"
+                           data-ripple-color="primary">
+                            Email: @item.EmailId<i class="fas fa-envelope ms-2"></i>
+                        </a>
+                        <a class="btn btn-link m-0 text-reset"
+                           role="button"
+                           data-ripple-color="primary">
+                            Call: @item.MobileNo<i class="fas fa-phone ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>-->
+        }
+
+    </div>
+
+    @if (Model.AlreadyPaidMembers.Count > 0)
+    {
+        <hr />
+        <h5>You already paid for below selected members.</h5>
+        <ul class="list-group list-group-light">
+            @foreach (var item in Model.AlreadyPaidMembers)
+            {
+                <li class="list-group-item align-items-center">
+                    <div class="align-items-center" style="text-align:center;">
+                        @if (item.ProfileImage == null || item.ProfileImage == "")
+                        {
+                            <img src="~/images/default-profile.png" alt="" style="width: 80px; height:80px;"
+                                 class="rounded-circle" />
+                        }
+                        else
+                        {
+                            <img src="@FilesLocation.RetriveProfileImageFromFolder@item.ProfileImage" alt="" style="width: 45px; height: 45px"
+                                 class="rounded-circle" />
+                        }
+                        <div class="ms-3">
+                            <p class="fw-bold mb-1">@item.MemberName</p>
+                            <p class="text-muted mb-0"> Memeber code : @item.MemberCode</p>
+                            <p class="text-muted mb-0">Already paid for expired member: @item.ExMemberCode</p>
+                        </div>
+                    </div>
+                    <span class="badge rounded-pill badge-success">Payment date: @item.PaymentDate</span>
+                </li>
+            }
+        </ul>
+
+    }
+
+    @if (ViewBag.AllPaidMember == false && membExpired != "")
+    {
+        //----uncomment below lines for online payment code.
+        @*<div style="text-align:center;">
+                <h5 class="card-title">Your total contribution amount to pay @TotalContributionAmount</h5>
+                <input type="button" class="btn btn-primary" name="btnPay" id="paytmWithPaytm" value="Proceed To Pay" />
+            </div>*@
+        <hr />
+        <div style="text-align:center;">
+            <h4 class="card-title">Your total contribution amount to pay Rs. @TotalContributionAmount</h4>
+            <h6>Please pay into below Google pay account and then click on Submit.</h6>
+            <div style="text-align:center;">
+                <img src="~/images/Girishbhai-gpay.jfif" style="width:100%; max-width:260px;" />
+            </div>
+            <hr />
+            <a asp-controller="Checkout" asp-action="OfflinePayment" class="btn btn-primary" name="btnPay">Submit</a>
+
+        </div>
+    }
+    else
+    {
+        <div style="text-align:center;">
+            <h5 class="card-title">There is no active expired member or you have already paid for selected members.</h5>
+        </div>
+    }
+
+</div>
+
+
+
+@*<form method="post" type="redirect" action="https://securegw-stage.paytm.in/theia/api/v1/processTransaction?mid=XXjGJp79519699543840&orderId=@OrderId">
+        <input type="text" name="mid" value="XXjGJp79519699543840" />
+        <input type="text" name="orderId" value="@OrderId" />
+        <input type="text" name="txnToken" value="@txtToken" />
+        <input type="text" name="paymentMode" value="UPI" />
+        <input type="text" name="payerAccount" value="7777777777@paytm" />
+        <input type="submit" value="Proceed to pay UPI payment">
+    </form>*@
+
+@section Scripts{
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="application/javascript" crossorigin="anonymous" src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/XXjGJp79519699543840.js"></script>
+    <script type="text/javascript">
+
+        //here we will pass txn token which you get from initate transaction api, the your orderId and and the amount
+        document.getElementById("paytmWithPaytm").addEventListener("click", function () {
+            onScriptLoad("@txtToken", "@OrderId", "@TotalContributionAmount");
+        });
+        function onScriptLoad(txnToken, orderId, amount) {
+            var config = {
+                "root": "",
+                "flow": "DEFAULT",
+                "merchant": {
+                    "name": "Pipavanshi Darji Samaj - Shradhanjali digital app",
+                    "logo": "https://developer.paytm.com/demo//static/images/merchant-logo.png?v=1.4"
+                },
+                "style": {
+                    "headerBackgroundColor": "#8dd8ff",
+                    "headerColor": "#3f3f40"
+                },
+                "data": {
+                    "orderId": orderId,
+                    "token": txnToken,
+                    "tokenType": "TXN_TOKEN",
+                    "amount": amount
+                },
+                payMode: {
+                    "order": ['UPI', 'CARD']
+                },
+                "handler": {
+                    "notifyMerchant": function (eventName, data) {
+                        if (eventName == 'SESSION_EXPIRED') {
+                            alert("Your session has expired!!");
+                            location.reload();
+                        }
+                    }
+                }
+            };
+            if (window.Paytm && window.Paytm.CheckoutJS) {
+                // initialze configuration using init method
+                window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                    console.log('Before JS Checkout invoke');
+                    // after successfully update configuration invoke checkoutjs
+                    window.Paytm.CheckoutJS.invoke();
+                }).catch(function onError(error) {
+                    console.log("Error => ", error);
+                });
+            }
+        }
+    </script>
+
+
+
+}
+@*@section Scripts{
+        <script type="text/javascript">
+                document.getElementById("paytmWithPaytm").addEventListener("click", function () {
+                    //onScriptLoad("@txtToken", "@OrderId", "@TotalContributionAmount");
+                    onScriptLoad();
+                });
+        </script>
+    }*@

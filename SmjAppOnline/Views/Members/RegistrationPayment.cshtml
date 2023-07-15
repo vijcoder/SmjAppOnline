@@ -1,0 +1,115 @@
+﻿@using SmjApp.Utility
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@*@model SmjApp.ViewModels.MembersRegistrationModel*@
+@{
+    var Model = (SmjApp.ViewModels.MembersRegistrationModel)ViewBag.ModelData;
+}
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0" />
+@{
+    //decimal TotalContributionAmount = Convert.ToDecimal(Model.Amount);
+    string txtToken = HttpContextAccessor.HttpContext.Session.GetString("txtToken");
+    decimal TotalContributionAmount = Convert.ToDecimal(HttpContextAccessor.HttpContext.Session.GetString("MR_Amount"));
+    string OrderId = HttpContextAccessor.HttpContext.Session.GetString("MR_OrderId");
+}
+
+<form method="post" asp-controller="Members" asp-action="OfflinePayment">
+
+    <input type="hidden" name="orderId" value="@OrderId" />
+    <input type="hidden" name="TotalContributionAmount" value="@TotalContributionAmount" />
+    <input type="hidden" name="memberCode" value="@Model.MemberCode" />
+    <div class="card mb-3">
+        <div class="row no-gutters">
+
+            <div class="col-md-3">
+                @if (string.IsNullOrEmpty(Model.ProfileImage))
+                {
+                    <img src="~/images/default-profile.PNG" class="card-img" asp-append-version="true" style="width:100%; max-width:250px; height:100%; max-height:300px;" />
+                }
+                else
+                {
+                    <img src="@FilesLocation.RetriveProfileImageFromFolder@Model.ProfileImage" class="card-img" asp-append-version="true" style="width:100%; max-width:250px; height:100%; max-height:300px;" />
+                }
+            </div>
+            <div class="col-md-9">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Initials @Model.Fullname</h5>
+                    <p class="card-text">MemberCode: @Model.MemberCode</p>
+                    <p class="card-text">Villagename: @Model.Villagename,  CurrentAddress: @Model.Address</p>
+                    <p class="card-text"><small class="text-muted"><strong>Contact details:</strong>@Model.MobileNo, @Model.EmailId,</small></p>
+                    <p class="card-text">Registration amount: @Model.Amount</p>
+
+                </div>
+            </div>
+            <div>
+                <h6>Please pay into below Google pay account and then click on Submit.</h6>
+                <div style="text-align:center;">
+                    <img src="~/images/Girishbhai-gpay.jfif" style="width:100%; max-width:260px;" />
+                </div>
+                <hr />
+                @*<a asp-controller="Members" asp-action="OfflinePayment" class="btn btn-primary" name="btnPay">Submit</a>*@
+                <input class="btn btn-primary" type="submit" value="Submit" />
+
+            </div>
+        </div>
+    </div>
+</form>
+
+@*<input type="button" class="btn btn-primary" name="btnPay" id="paytmWithPaytm" value="Proceed To Pay" />*@
+
+@section Scripts{
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="application/javascript" crossorigin="anonymous" src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/XXjGJp79519699543840.js"></script>
+
+    <script type="text/javascript">
+            //here we will pass txn token which you get from initate transaction api, the your orderId and and the amount
+            document.getElementById("paytmWithPaytm").addEventListener("click", function () {
+                onScriptLoad("@txtToken", "@OrderId", "@TotalContributionAmount");
+            });
+
+            function onScriptLoad(txnToken, orderId, amount) {
+                var config = {
+                    "root": "",
+                    "flow": "DEFAULT",
+                    "merchant": {
+                        "name": "Pipavanshi Darji Samaj - Shradhanjali digital app",
+                        "logo": "https://developer.paytm.com/demo//static/images/merchant-logo.png?v=1.4"
+                    },
+                    "style": {
+                        "headerBackgroundColor": "#8dd8ff",
+                        "headerColor": "#3f3f40"
+                    },
+                    "data": {
+                        "orderId": orderId,
+                        "token": txnToken,
+                        "tokenType": "TXN_TOKEN",
+                        "amount": amount
+                    },
+                    "handler": {
+                        "notifyMerchant": function (eventName, data) {
+                            if (eventName == 'SESSION_EXPIRED') {
+                                alert("Your session has expired!!");
+                                location.reload();
+                            }
+                        }
+                    }
+                };
+
+                if (window.Paytm && window.Paytm.CheckoutJS) {
+                    // initialze configuration using init method
+                    window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+                        console.log('Before JS Checkout invoke');
+                        // after successfully update configuration invoke checkoutjs
+                        window.Paytm.CheckoutJS.invoke();
+                    }).catch(function onError(error) {
+                        console.log("Error => ", error);
+                    });
+                }
+            }
+    </script>
+
+
+
+}

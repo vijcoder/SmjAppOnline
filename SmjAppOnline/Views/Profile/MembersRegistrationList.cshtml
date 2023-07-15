@@ -1,0 +1,66 @@
+﻿ 
+@{
+Layout = "~/Views/Shared/_ProfileLayout.cshtml";
+    ViewData["Title"] = "Members List";
+}
+ 
+<div class="table-responsive">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>MemberCode</th>
+                <th>Fullname</th>
+                <th>MobileNo</th>
+                <th>EmailId</th>
+                <th>Villagename</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var membersSelected = [];
+            var table = $("#example").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                scrollY: "100%",
+                scrollX: true,
+                scrollCollapse: true,
+                //select: { style: 'multi' },
+                fixedColumns: {
+                    left: 1
+                },
+                "ajax": {
+                    "url": "/Profile/LoadRegisteredMemberByUser",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs": [{
+                    "defaultContent": "-",
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "memberCode", "name": "MemberCode" },
+                    { "data": "fullname", "name": "Fullname", "autoWidth": true },
+                    { "data": "mobileNo", "name": "MobileNo", "autoWidth": true },
+                    { "data": "emailId", "name": "EmailId", "autoWidth": true },
+                    { "data": "villagename", "name": "Villagename", "autoWidth": true },
+                ]
+            });
+        });
+    </script>
+
+}
+

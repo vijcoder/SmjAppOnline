@@ -1,0 +1,78 @@
+﻿@model SmjApp.Models.AuthenticateModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<!-- form card login with validation feedback -->
+<!--<div class="card card-outline-secondary">
+    <div class="card-header">
+        <h3 class="mb-0">Login</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (!string.IsNullOrEmpty(ViewBag.Message))
+            {
+                <span class="text-danger">
+                    @ViewBag.Message
+                </span>
+            }
+            <div class="form-group">
+                <label for="uname1">Username</label>
+                <input type="text" asp-for="UserName" class="form-control" name="UserName" id="UserName" required="">
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" asp-for="Password" class="form-control" id="Password" required="" autocomplete="new-password">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-check small">
+                <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" asp-for="RememberLogin"> <span>Remember me on this computer</span>
+                </label>
+            </div>
+            <button type="submit" class="btn btn-success btn-lg float-right" id="btnLogin">Login</button> <a asp-controller="Profile" asp-action="ForgotPassword" style="margin-left:10px;">ForgotPassword</a>
+        </form>
+    </div>-->
+    <!--/card-body-->
+<!--</div>-->
+<!-- /form card login -->
+
+<h2>Login</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (!string.IsNullOrEmpty(ViewBag.Message))
+            {
+                <span class="text-danger">
+                    @ViewBag.Message
+                </span>
+            }
+            @Html.HiddenFor(x => x.ReturnUrl)
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox" style="display:inline-flex;"> 
+                        <input asp-for="RememberLogin" style="margin:2px 5px 0 0;" /> <div>Remember me on this device.</div> 
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Login" class="btn btn-primary" /> <a asp-controller="Profile" asp-action="ForgotPassword" style="margin-left:10px;">ForgotPassword</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+

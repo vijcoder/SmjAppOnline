@@ -1,0 +1,130 @@
+﻿@using SmjApp.Utility
+@model PaginatedList<Domains.Models.MembersRegistration>
+
+@{ ViewData["Title"] = "Index"; }
+
+<p>
+    <a asp-action="Create">Create New</a>
+    <form asp-controller="Checkout" asp-action="Index" method="post">
+        <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+        <input type="submit" name="btnSubmit" class="btn btn-primary" value="Pay Contribution" />
+    </form>
+</p>
+<!--<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal"><a asp-action="Create">Create New</a></h5>
+    <nav class="my-2 my-md-0 mr-md-3" id="divbtnContribute" style="display:none;">
+        <form asp-controller="Checkout" asp-action="Index" method="post">
+            <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+            <input type="submit" name="btnSubmit" class="btn btn-primary" value="Pay Contribution" />
+        </form>
+    </nav>-->
+@*<a class="btn btn-outline-primary" href="#">Sign up</a>*@
+<!--</div>-->
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Clear search</a>
+        </p>
+    </div>
+</form>
+
+<div class="table-responsive">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    &nbsp;
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["MemberCodeSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Member Code</a>
+                </th>
+
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["MemberNameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Member Name</a>
+                </th>
+                <th>
+                    Mobile No
+                </th>
+                <th>
+                    Email ID
+                </th>
+                <th>
+                    Village Name
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" chkMCode="@item.MemberCode" name="chkMemberCode" id=@($"chk{@item.MemberCode}") />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MemberCode)
+                    </td>
+                    <td>
+                        @{ string MemberName = (String.Format("{0} {1} {2} {3}", item.Initials, item.Fullname)); }
+                        @Html.Label(MemberName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MobileNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Villagename)
+                    </td>
+                    @*<td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        </td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+@{ var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : ""; }
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+
+@section Scripts {
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+            var membersSelected = [];
+            $('input[type=checkbox][name=chkMemberCode]').change(function () {
+                if ($(this).prop("checked")) {
+                    $("#divbtnContribute").css("display", "block");
+                    membersSelected.push($(this).attr("chkMCode"))
+                }
+                else {
+                    membersSelected.pop($(this).attr("chkMCode"))
+                }
+                $("#hfMembersSelected").val(membersSelected);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Members List";
+}
+
+@*<button id="button" class="btn-success">Row count</button>*@
+@*<form asp-controller="Checkout" asp-action="Index" method="post">
+        <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+        <input type="submit" name="btnSubmit" class="btn btn-primary" id="button" value="Pay Contribution" />
+    </form>
+    <br />*@
+
+<div id="homePageParentDiv" class="table-responsive">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Fullname</th>
+                <th>Villagename</th>
+                <th>MobileNo</th>
+                <th>EmailId</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<hr />
+<form asp-controller="Checkout" asp-action="Index" method="post">
+    <div style="text-align:center;">
+        <input type="hidden" id="hfMembersSelected" name="hfMembersSelected" />
+        <input type="submit" name="btnSubmit" class="btn btn-primary" id="button" value="Pay Contribution" />
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var membersSelected = [];
+            var table = $("#example").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                order: [[1, 'desc']],
+                scrollY: "100%",
+                scrollX: true,
+                scrollCollapse: true,
+                select: { style: 'multi' },
+                fixedColumns: {
+                    left: 1
+                },
+                "ajax": {
+                    "url": "/Home/LoadData",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs": [{
+                    "defaultContent": "-",
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "memberCode", "name": "MemberCode", "sWidth": "20px" },
+                    { "data": "fullname", "name": "Fullname", "autoWidth": true },
+                    { "data": "villagename", "name": "Villagename", "autoWidth": true },
+                    { "data": "mobileNo", "name": "MobileNo", "autoWidth": true },
+                    { "data": "emailId", "name": "EmailId", "autoWidth": true },
+                ]
+            });
+
+            $('#example tbody').on('click', 'tr', function () {
+                $(this).toggleClass('selected');
+            });
+
+            $('#button').click(function () {
+                for (var i = 0; i < table.rows('.selected').data().length; i++) {
+                    membersSelected.push(table.rows('.selected').data()[i]["memberCode"]);
+                }
+                $("#hfMembersSelected").val(membersSelected);
+                if (membersSelected.length <= 0) {
+                    alert("Please select members from the list to proceed to pay.");
+                    return false;
+                }
+            });
+        });
+    </script>
+
+}
+

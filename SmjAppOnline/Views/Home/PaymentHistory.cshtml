@@ -1,0 +1,141 @@
+﻿@{
+    ViewData["Title"] = "Payment History";
+}
+
+<div>
+    <form enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="ui-widget">
+                            <input id="txtSearchMember" type="text" class="form-control" placeholder="Please enter member code to search" style="width:100%;" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <input type="button" class="btn btn-success" id="btnSearch" value="Search" />
+                    <input type="button" class="btn btn-danger" id="btnClear" value="Clear" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<br />
+<div id="divGridTable" class="table-responsive" style="display:none;">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Member  name</th>
+                <th>Ex Member name</th>
+                <th>PaymentByUsername</th>
+                <th>Amount</th>
+                <th>IsPaid</th>
+                <th>IsActive</th>
+                <th>CreatedOn</th>
+                <th>IsPaymentApproved</th>
+                <th>PaymentApprovedBy</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<br />
+<br />
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.19/dataRender/datetime.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnClear").click(function () {
+                $("#txtSearchMember").val("");
+                $("#divGridTable").css("display", "none");
+            })
+            $("#btnSearch").click(function () {
+                if ($("#txtSearchMember").val().length > 0) {
+                    getHistoryData($("#txtSearchMember").val());
+                    $("#divGridTable").css("display", "initial");
+                } else {
+                    $("#divGridTable").css("display", "none");
+                }
+            })
+            $('#txtSearchMember').change(function () {
+                if ($("#txtSearchMember").val().length > 0) {
+                    getHistoryData($("#txtSearchMember").val());
+                    $("#divGridTable").css("display", "initial");
+                } else {
+                    $("#divGridTable").css("display", "none");
+                }
+            });
+            var table;
+            function getHistoryData(memberCode) {
+                //moment.updateLocale(moment.locale(), { invalidDate: "Invalid Date Example" });
+                var membersSelected = [];
+                //table.reload();
+                //$('#example').dataTable().fnClearTable();
+                table = $("#example").DataTable({
+                    destroy: true,
+                    "processing": true, // for show progress bar
+                    "serverSide": true, // for process server side
+                    "filter": true, // this is for disable filter (search box)
+                    "orderMulti": false, // for disable multiple column at once
+                    scrollY: "100%",
+                    scrollX: true,
+                    scrollCollapse: true,
+                    //select: { style: 'multi' },
+                    fixedColumns: {
+                        left: 1
+                    },
+
+                    //scroller: {
+                    //    loadingIndicator: true
+                    //},
+                    //scrollCollapse: true,
+                    "ajax": {
+                        "url": "/Home/GetContributionTransaction",
+                        "type": "POST",
+                        "datatype": "json",
+                        "data": {
+                            memberCode: memberCode
+                        },
+                    },
+                    "columnDefs": [{
+                        "defaultContent": "-",
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    }
+                    ],
+
+                    "columns": [
+                        { "data": "id", "name": "Id", "autoWidth": true },
+                        { "data": "membersContribution.memberCode", "name": "MemberCode", "sWidth": "20px" },
+                        { "data": "memberFullName", "name": "MemberFullName", "autoWidth": true },
+                        { "data": "exMemberFullName", "name": "ExMemberFullName", "autoWidth": true },
+                        { "data": "paymentByUsername", "name": "PaymentByUsername", "autoWidth": true },
+                        { "data": "membersContribution.orderAmount", "name": "OrderAmount", "autoWidth": true },
+                        { "data": "membersContribution.isPaid", "name": "IsPaid", "autoWidth": true },
+                        { "data": "membersContribution.isActive", "name": "IsActive", "autoWidth": true },
+                        { "data": "membersContribution.createdOn", "name": "CreatedOn", "autoWidth": true },
+                        { "data": "membersContribution.isPaymentApproved", "name": "IsPaymentApproved", "autoWidth": true },
+                        { "data": "approvedByUsername", "name": "ApprovedByUsername", "autoWidth": true },
+
+                    ]
+
+                });
+            }
+
+        });
+
+
+    </script>
+
+
+}
+

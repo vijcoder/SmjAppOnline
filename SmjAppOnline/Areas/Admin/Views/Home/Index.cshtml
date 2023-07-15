@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+
+<style type="text/css">
+    .text-warning {
+        color: #ff9100 !important;
+    }
+</style>
+<div id="myModal" class="modal fade" role="dialog" style="width:100%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="h4ModelTitle"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="width:100%; overflow:auto;">
+                <img id="imgModelPopup" style="width:100%;" />
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="table-responsive">
+    <table id="example" class="stripe table table-striped table-bordered" style="width: 100%; padding:0px;" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Profile Image</th>
+                <th>Age Proof</th>
+                <th>Fullname</th>
+                <th>MobileNo</th>
+                <th>EmailId</th>
+                <th>IsPaid</th>
+                <th>Villagename</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<br />
+<br />
+<br />
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var membersSelected = [];
+            var table = $("#example").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                scrollY: "100%",
+                scrollX: true,
+                scrollCollapse: true,
+                //select: { style: 'multi' },
+                fixedColumns: {
+                    left: 1
+                },
+                "ajax": {
+                    "url": "Admin/Home/LoadData",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columnDefs": [{
+                    "defaultContent": "-",
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "memberCode", "name": "MemberCode", "autoWidth": true },
+                    {
+                        "data": null,
+                        "render": function (data, type, full, meta) {
+                            console.log("full.profileImage =" + full.profileImage);
+                            if (full.profileImage == '' || full.profileImage == null) {
+                                return '<a> <img src="../../Images/default-profile.PNG" class="avatar" width="50" /> </a> ';
+                            } else {
+                                return '<a  id="ancProfileImage" data-profileImage="' + full.profileImage + '"> <img src="/ProfileUploads/' + full.profileImage + '" class="avatar" width="50" /> </a> ';
+                            }
+                        }
+                    },
+                    {
+                        "data": null,
+                        "render": function (data, type, full, meta) {
+                            if (full.ageProofImage == '' || full.ageProofImage == null) {
+                                return '<a> <img src="../../Images/default-profile.PNG" class="avatar" width="50" /> </a> ';
+                            }
+                            else {
+                                return '<a  id="ancAgeProofImage" data-ageProofImage="' + full.ageProofImage + '"> <img src="/AgeProofUploads/' + full.ageProofImage + '" class="avatar" width="50" /> </a> ';
+                            }
+                        }
+                    },
+                    { "data": "fullname", "name": "Fullname", "autoWidth": true },
+                    { "data": "mobileNo", "name": "MobileNo", "autoWidth": true },
+                    { "data": "emailId", "name": "EmailId", "autoWidth": true },
+                    { "data": "isPaid", "name": "IsPaid", "autoWidth": true },
+                    //{ "data": "isApproved", "name": "IsApproved" },
+                    { "data": "villagename", "name": "Villagename", "autoWidth": true },
+                    {
+                        data: null,
+                        "render": function (data, type, full, meta) {
+                            //return '<a href="/Admin/Members/Edit/' + full.Id + '"  class="text-warning">Edit</a> | <a href="/Admin/Members/SetMemebrExpired/' + full.Id + '"  class="text-warning">SetMemebrExpired</a> | </br> <a href="/Admin/Members/SetApproval/' + full.Id + '"  class="text-warning">SetApproval</a> | <a href="/Admin/Members/SetDiactivation/' + full.Id + '"  class="text-warning">SetDiactivation</a> ';
+                            return '<a href="/Admin/Members/Edit/' + full.id + '"  class="text-warning">Edit</a>  | <a href="/Admin/Members/SetMemebrExpired/' + full.id + '"  class="text-warning">SetMemebrExpired</a> | <a href="/Admin/Members/SetIsPaidAndApproved/' + full.id + '"  class="text-warning">Set Paid and Approved</a> | </br> <a href="/Admin/Members/SetApproval/' + full.id + '"  class="text-warning">SetApproval</a> | <a href="/Admin/Members/SetDiactivation/' + full.id + '"  class="text-warning">SetDiactivation</a>';
+                        }
+                    }
+                    //{
+                    //    "render": function (data, type, full, meta) {
+                    //        //return '<a href="/Admin/Members/Edit/' + full.Id + '"  class="text-warning">Edit</a> | <a href="/Admin/Members/SetMemebrExpired/' + full.Id + '"  class="text-warning">SetMemebrExpired</a> | </br> <a href="/Admin/Members/SetApproval/' + full.Id + '"  class="text-warning">SetApproval</a> | <a href="/Admin/Members/SetDiactivation/' + full.Id + '"  class="text-warning">SetDiactivation</a> ';
+                    //        return '<a href="/Admin/Members/Edit/' + full.Id + '"  class="text-warning">Edit</a>';
+                    //    }
+                    //}
+                ]
+
+            });
+
+            $('#example tbody').on('click', 'tr #ancProfileImage', function () {
+                //var rowData = table.row(this).data();
+                var imgPath = this.attributes;
+                $("#h4ModelTitle").text("Profile Image");
+                $("#imgModelPopup").attr("src", "/ProfileUploads/" + imgPath["data-profileimage"].value); //.src("/ProfileUploads/" + imgPath["data-profileimage"].value);
+                $('#myModal').modal('show');
+                // do your staff
+            });
+            $('#example tbody').on('click', 'tr #ancAgeProofImage', function () {
+                //var rowData = table.row(this).data();
+                var imgPath = this.attributes;
+                $("#h4ModelTitle").text("Age Proof Image");
+                $("#imgModelPopup").attr("src", "/AgeProofUploads/" + imgPath["data-ageProofImage"].value); //.src("/AgeProofUploads/" + imgPath["data-profileimage"].value);
+                $('#myModal').modal('show');
+                // do your staff
+            });
+            //$('#example tbody').on('click', 'tr', function () {
+            //    $(this).toggleClass('selected');
+            //});
+
+            //    $('#button').click(function () {
+            //        for (var i = 0; i < table.rows('.selected').data().length; i++){
+            //            membersSelected.push(table.rows('.selected').data()[i]["memberCode"]);
+            //        }
+            //        debugger;
+            //        $("#hfMembersSelected").val(membersSelected);
+            //        if (membersSelected.length <= 0) {
+            //            alert("Please select members from the list to proceed to pay.");
+            //            return false;
+            //        }
+            //    });
+
+        });
+    </script>
+    <script type="text/javascript">
+        function GetDetails(profileImage) {
+            debugger
+            $("#h4ModelTitle").text("title");
+            $("#imgModelPopup").src("/ProfileUploads/" + profileImage);
+            $('#myModal').modal('show');
+        }
+    </script>
+
+}
+
